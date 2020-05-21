@@ -1,0 +1,8 @@
+mails.db
+main.py.BAK
+t.py
+t2.py
+**/pyvenv.cfg
+**/venv
+**/__pycache__
+**/.idea
