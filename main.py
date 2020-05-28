@@ -8,6 +8,7 @@
 """
 import win32com.client
 import backend
+from datetime import datetime
 
 last_mail_EntryID = None
 
@@ -37,6 +38,8 @@ def get_mail():
     if not last_mail_EntryID == mail['id']:
         backend.insert(mail['id'], mail['rec_time'], mail['subject'], 'TRUE')
         print(mail)
+        print('Sending automated reply to the sender...')
+        reply_all_to_mail(message, f'Received your email at: {str(datetime.now().replace(microsecond=0))}')
         print('*' * 10)
     last_mail_EntryID = mail['id']
 
@@ -74,7 +77,8 @@ def complete_pending(last_session_id):
             'body': message.body
         }
         print(mail['subject'])
-
+        print('Sending automated reply to the sender...')
+        reply_all_to_mail(message, f'Received your email at: {str(datetime.now().replace(microsecond=0))}')
         processed = True
         # if processed:
         if processed:
@@ -94,6 +98,19 @@ def complete_pending(last_session_id):
             last_mail_EntryID = task['id']
     last_mail_EntryID = last_session_id
     print('last_mail_EntryID: ', last_mail_EntryID)
+
+
+def reply_all_to_mail(mail, msg):
+    """
+        Function to send automated reply to the mail item
+    :param mail: The mail item on which reply has to be sent
+    :param msg: The reply message text
+    :return:
+    """
+    reply = mail.ReplyAll()
+    reply.Body = f"{msg} \n {mail.body}"
+    reply.Send()
+    print('Reply sent..')
 
 
 def start():
